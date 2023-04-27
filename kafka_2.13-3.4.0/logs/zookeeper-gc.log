@@ -1,16 +1,30 @@
-[2023-03-28T12:53:50.040+0100][gc,heap] Heap region size: 1M
-[2023-03-28T12:53:50.045+0100][gc     ] Using G1
-[2023-03-28T12:53:50.045+0100][gc,heap,coops] Heap address: 0x00000007e0000000, size: 512 MB, Compressed Oops mode: Zero based, Oop shift amount: 3
-[2023-03-28T12:53:50.572+0100][gc,start     ] GC(0) Pause Young (Normal) (G1 Evacuation Pause)
-[2023-03-28T12:53:50.573+0100][gc,task      ] GC(0) Using 8 workers of 8 for evacuation
-[2023-03-28T12:53:50.578+0100][gc,phases    ] GC(0)   Pre Evacuate Collection Set: 0.0ms
-[2023-03-28T12:53:50.578+0100][gc,phases    ] GC(0)   Evacuate Collection Set: 4.6ms
-[2023-03-28T12:53:50.578+0100][gc,phases    ] GC(0)   Post Evacuate Collection Set: 0.3ms
-[2023-03-28T12:53:50.578+0100][gc,phases    ] GC(0)   Other: 0.5ms
-[2023-03-28T12:53:50.578+0100][gc,heap      ] GC(0) Eden regions: 25->0(21)
-[2023-03-28T12:53:50.578+0100][gc,heap      ] GC(0) Survivor regions: 0->4(4)
-[2023-03-28T12:53:50.578+0100][gc,heap      ] GC(0) Old regions: 0->4
-[2023-03-28T12:53:50.578+0100][gc,heap      ] GC(0) Humongous regions: 0->0
-[2023-03-28T12:53:50.578+0100][gc,metaspace ] GC(0) Metaspace: 14630K(15232K)->14630K(15232K) NonClass: 13153K(13568K)->13153K(13568K) Class: 1477K(1664K)->1477K(1664K)
-[2023-03-28T12:53:50.578+0100][gc           ] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 25M->7M(512M) 5.605ms
-[2023-03-28T12:53:50.578+0100][gc,cpu       ] GC(0) User=0.03s Sys=0.01s Real=0.00s
+[2023-04-27T16:36:25.306+0100][gc,heap] Heap region size: 1M
+[2023-04-27T16:36:25.312+0100][gc     ] Using G1
+[2023-04-27T16:36:25.312+0100][gc,heap,coops] Heap address: 0x00000007e0000000, size: 512 MB, Compressed Oops mode: Zero based, Oop shift amount: 3
+[2023-04-27T16:36:26.106+0100][gc,start     ] GC(0) Pause Young (Normal) (G1 Evacuation Pause)
+[2023-04-27T16:36:26.106+0100][gc,task      ] GC(0) Using 8 workers of 8 for evacuation
+[2023-04-27T16:36:26.115+0100][gc,phases    ] GC(0)   Pre Evacuate Collection Set: 0.0ms
+[2023-04-27T16:36:26.115+0100][gc,phases    ] GC(0)   Evacuate Collection Set: 7.6ms
+[2023-04-27T16:36:26.115+0100][gc,phases    ] GC(0)   Post Evacuate Collection Set: 0.3ms
+[2023-04-27T16:36:26.115+0100][gc,phases    ] GC(0)   Other: 0.7ms
+[2023-04-27T16:36:26.115+0100][gc,heap      ] GC(0) Eden regions: 25->0(21)
+[2023-04-27T16:36:26.115+0100][gc,heap      ] GC(0) Survivor regions: 0->4(4)
+[2023-04-27T16:36:26.115+0100][gc,heap      ] GC(0) Old regions: 0->4
+[2023-04-27T16:36:26.115+0100][gc,heap      ] GC(0) Humongous regions: 0->0
+[2023-04-27T16:36:26.115+0100][gc,metaspace ] GC(0) Metaspace: 14622K(15232K)->14622K(15232K) NonClass: 13144K(13568K)->13144K(13568K) Class: 1478K(1664K)->1478K(1664K)
+[2023-04-27T16:36:26.115+0100][gc           ] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 25M->7M(512M) 8.804ms
+[2023-04-27T16:36:26.115+0100][gc,cpu       ] GC(0) User=0.03s Sys=0.00s Real=0.01s
+[2023-04-27T19:53:47.733+0100][gc,start     ] GC(1) Pause Young (Normal) (G1 Evacuation Pause)
+[2023-04-27T19:53:47.733+0100][gc,task      ] GC(1) Using 8 workers of 8 for evacuation
+[2023-04-27T19:53:47.761+0100][gc,mmu       ] GC(1) MMU target violated: 21.0ms (20.0ms/21.0ms)
+[2023-04-27T19:53:47.761+0100][gc,phases    ] GC(1)   Pre Evacuate Collection Set: 0.7ms
+[2023-04-27T19:53:47.761+0100][gc,phases    ] GC(1)   Evacuate Collection Set: 25.8ms
+[2023-04-27T19:53:47.761+0100][gc,phases    ] GC(1)   Post Evacuate Collection Set: 0.5ms
+[2023-04-27T19:53:47.761+0100][gc,phases    ] GC(1)   Other: 0.9ms
+[2023-04-27T19:53:47.761+0100][gc,heap      ] GC(1) Eden regions: 21->0(24)
+[2023-04-27T19:53:47.761+0100][gc,heap      ] GC(1) Survivor regions: 4->1(4)
+[2023-04-27T19:53:47.761+0100][gc,heap      ] GC(1) Old regions: 4->8
+[2023-04-27T19:53:47.761+0100][gc,heap      ] GC(1) Humongous regions: 0->0
+[2023-04-27T19:53:47.761+0100][gc,metaspace ] GC(1) Metaspace: 16540K(17152K)->16540K(17152K) NonClass: 14900K(15360K)->14900K(15360K) Class: 1639K(1792K)->1639K(1792K)
+[2023-04-27T19:53:47.761+0100][gc           ] GC(1) Pause Young (Normal) (G1 Evacuation Pause) 28M->7M(512M) 27.900ms
+[2023-04-27T19:53:47.761+0100][gc,cpu       ] GC(1) User=0.03s Sys=0.04s Real=0.03s

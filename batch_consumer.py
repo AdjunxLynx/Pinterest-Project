@@ -10,8 +10,8 @@ import os
 topic = "MyFirstKafkaTopic"
 consumer = KafkaConsumer(topic, bootstrap_servers = "localhost:9092")
 
-s3_client = boto3.client("s3")
-
+s3_resource = boto3.resource("s3")
+bucket = s3_resource.Bucket('pinterest-data-d4a3a0c7-0a92-4efb-bdcc-4b3e20242e1e')
 
 findspark.init()
 cfg = (
@@ -31,38 +31,15 @@ session = pyspark.sql.SparkSession.builder.config(conf=cfg).getOrCreate()
 print("working")
 i = 0
 for message in consumer:
-    created = False
     new_message = str(message.value.decode("ascii"))
 
+    filename = ("message_" + str(i) + ".json")
 
-    with open("s3_data.json", "w+") as s3_data:
-        try:
-            s3_client.download_fileobj("pinterest-data-d4a3a0c7-0a92-4efb-bdcc-4b3e20242e1e", "pinterest_data.json", s3_data)
-            file_data = s3_data.read()
-        except:
-            file_data = "[]"
-            created = True
-            print("No file to read")
-    try:
-        if file_data[0] != "[":
-            file_data = "[" + file_data
-
-        if file_data[-1] == "]":
-            file_data = file_data[0::-2]
-
-        if not created:
-            file_data = file_data + ", "
-        file_data = file_data + new_message
-        file_data = file_data + "]"
-    except Exception as E:
-        print(E)
+    
+    payload = new_message
+    print(payload)
 
 
-    with open("s3_data.json", "w+") as s3_data:
-        print(file_data)
-        dumped = json.loads(file_data)
-        json.dump(dumped, s3_data)
-
-    with open("s3_data.json", "r+") as s3_data:
-        response = s3_client.upload_file("s3_data.json", "pinterest-data-d4a3a0c7-0a92-4efb-bdcc-4b3e20242e1e", "pinterest_data.json")
+    response = bucket.put_object(Body= payload, Key = filename)
+    i += 1
     print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
