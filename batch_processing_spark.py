@@ -17,11 +17,14 @@ conf = SparkConf() \
 sc=SparkContext(conf=conf)
 
 #connection data
-url = "jdbc:postgresql://192.168.8.107:5432/pinterest_streaming"
-login = {"user": "admin", "password": "Myacount1"}
+with open("Priv.yaml") as priv:
+    priv_data = yaml.load(priv, Loader=SafeLoader)
+url = priv_data["url"]
+login = {priv_data["PSQL_user"], priv_data["PSQL_password"]}
+accessKeyId = priv_data["accessKeyId"]
+secretAccessKey = priv_data["secretAccessKey"]
 
-accessKeyId="AKIAWU5CQUVY2FKMX5BG"
-secretAccessKey="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"
+
 hadoopConf = sc._jsc.hadoopConfiguration()
 hadoopConf.set('fs.s3a.access.key', accessKeyId)
 hadoopConf.set('fs.s3a.secret.key', secretAccessKey)
@@ -46,16 +49,29 @@ schema = StructType([
 
 spark=SparkSession(sc)
 
-#connecting to AWS data bucket
-session = boto3.Session(aws_access_key_id = accessKeyId, aws_secret_access_key = secretAccessKey)
-s3 = session.resource("s3")
-bucket_name = ("pinterest-data-d4a3a0c7-0a92-4efb-bdcc-4b3e20242e1e")
-my_bucket= s3.Bucket(bucket_name)
-for obj in my_bucket.objects.all():
-    pass
-    #print obj
-
 before = time.time()
+
+def clean_df(df):
+    """this function returns a cleaned dataframe using pyspark"""
+    df = df.drop('downloaded')
+    df = df.distinct()
+    image_or_video = ['video', 'image', 'multi-video(story page format)']
+    category_list = ['event-planning', 'art', 'home-decor', 'diy-and-crafts', 'education', 'christmas', 'mens-fashion', 'tattoos', 'vehicles', 'travel', 'beauty', 'quotes', 'finance']
+    df = df.filter(df.is_image_or_video.isin(image_or_video))
+    df = df.filter(df.category.isin(category_list))
+
+    #column cleaning operations
+    df = df.withColumn('follower_count', when(df.follower_count.endswith('k'), regexp_replace(df.follower_count,'k','000'))
+                   .when(df.follower_count.endswith('M'), regexp_replace(df.follower_count,'M','000000'))
+                   .otherwise(df.follower_count))
+    df = df.withColumn('description', when(df.description == 'No description available Story format',  'null')
+                   .otherwise(df.description))
+    df = df.withColumn('tag_list', when(df.tag_list.contains(','), regexp_replace(df.tag_list, ',', ''))
+                   .otherwise(df.tag_list))
+    df.withColumn("follower_count", df.follower_count.cast(IntegerType()))
+    
+    return df
+
 
 # Read from the S3 bucket
 df = spark.read.option("mode", "PERMISSIVE") \
@@ -68,23 +84,7 @@ df = spark.read.option("mode", "PERMISSIVE") \
 # s3a://pinterest-data-d4a3a0c7-0a92-4efb-bdcc-4b3e20242e1e/pinterest_data.json
 
 ###DF cleaning operations
-df = df.drop('downloaded')
-df = df.distinct()
-image_or_video = ['video', 'image', 'multi-video(story page format)']
-category_list = ['event-planning', 'art', 'home-decor', 'diy-and-crafts', 'education', 'christmas', 'mens-fashion', 'tattoos', 'vehicles', 'travel', 'beauty', 'quotes', 'finance']
-df = df.filter(df.is_image_or_video.isin(image_or_video))
-df = df.filter(df.category.isin(category_list))
-
-#column cleaning operations
-df = df.withColumn('follower_count', when(df.follower_count.endswith('k'), regexp_replace(df.follower_count,'k','000'))
-                   .when(df.follower_count.endswith('M'), regexp_replace(df.follower_count,'M','000000'))
-                   .otherwise(df.follower_count))
-df = df.withColumn('description', when(df.description == 'No description available Story format',  'null')
-                   .otherwise(df.description))
-df = df.withColumn('tag_list', when(df.tag_list.contains(','), regexp_replace(df.tag_list, ',', ''))
-                   .otherwise(df.tag_list))
-df.withColumn("follower_count", df.follower_count.cast(IntegerType()))
-
+cleaned_data = clean_df(df)
 #print and upload to PostGreSQL
 df.show()
 df.write.jdbc(url=url, table="long_term_user_data", mode="overwrite", properties=login)

@@ -38,4 +38,4 @@ for message in consumer:
     payload = new_message
     response = bucket.put_object(Body= payload, Key = filename)
     i += 1
-    print("End of Upload batch")
+    print("End of Upload batch " + str(i))
