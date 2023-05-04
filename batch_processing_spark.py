@@ -10,12 +10,14 @@ from datetime import datetime
 
 import os
 import boto3
-
-os.environ["PYSPARK_SUBMIT_ARGS"] = "--packages com.amazonaws:aws-java-sdk-s3:1.12.196,org.apache.hadoop:hadoop-aws:3.3.4 pyspark-shell"
+os.environ["PYSPARK_SUBMIT_ARGS"] = "--packages com.amazonaws:aws-java-sdk-s3:1.12.196,org.apache.hadoop:hadoop-aws:3.3.4,org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2 --driver-class-path /Users/kamil/Downloads/postgresql-42.2.27.jre7.jar batch_processing_spark.py pyspark-shell"
 
 conf = SparkConf() \
     .setAppName('S3toSpark') \
     .setMaster('local[*]')
+
+url = "jdbc:postgresql://192.168.8.107:5432/pinterest_streaming"
+login = {"user": "admin", "password": "Myacount1"}
 
 sc=SparkContext(conf=conf)
 
@@ -67,7 +69,7 @@ before = time.time()
 df = spark.read.option("mode", "PERMISSIVE").schema(schema).option("header", True).option("columnNameOfCorruptRecord", "_corrupt_record").json("s3a://pinterest-data-d4a3a0c7-0a92-4efb-bdcc-4b3e20242e1e/*.json").cache()
 # You may want to change this to read csv depending on the files your reading from the bucket
 # s3a://pinterest-data-d4a3a0c7-0a92-4efb-bdcc-4b3e20242e1e/pinterest_data.json
-df.show()
+#df.show()
 df = df.drop('downloaded')
 #df = df.drop('follower_count', 'title', 'unique_id', 'index', 'tag_list', 'image_src', ' save_location','category')
 df = df.distinct()
@@ -90,25 +92,11 @@ df = df.withColumn('tag_list', when(df.tag_list.contains(','), regexp_replace(df
 
 df.withColumn("follower_count", df.follower_count.cast(IntegerType()))
 
-
-if False:
-    tags = df.rdd.map(lambda x: x.tag_list).collect() #collects all the tags from df
-    tag_list = list(OrderedDict.fromkeys(tags)) #removes duplicate lists
-    tag_list = (' '.join(tag_list)).lower() #converts list to string in lower case
-    tag_list = tag_list.replace(',', ' ')
-    tag_list = tag_list.split(' ')
-    tag_list = sorted(list(dict.fromkeys(tag_list))) #removes duplicates
-
-
-
-
 #print(tag_list)
 #df.printSchema()
 df.show()
-df.write.mode("overwrite").csv("csv")
 
-
+df.write.jdbc(url=url, table="long_term_user_data", mode="overwrite", properties=login)
 
 after = time.time()
 print('took ' + str(round(after-before)) +  ' seconds')
-

@@ -32,14 +32,9 @@ print("working")
 i = 0
 for message in consumer:
     new_message = str(message.value.decode("ascii"))
-
     filename = ("message_" + str(i) + ".json")
 
-    
     payload = new_message
-    print(payload)
-
-
     response = bucket.put_object(Body= payload, Key = filename)
     i += 1
     print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
