@@ -1,3 +1,5 @@
+"""Script to consume and upload all data sent to Kafka Consumer to an AWS datalake"""
+
 from kafka import KafkaConsumer
 import boto3
 import findspark
@@ -31,6 +33,7 @@ session = pyspark.sql.SparkSession.builder.config(conf=cfg).getOrCreate()
 print("working")
 i = 0
 for message in consumer:
+    """Loops through each message sent to the Kafka Consumer and uploads it to an AWS bucket"""
     new_message = str(message.value.decode("ascii"))
     filename = ("message_" + str(i) + ".json")
 

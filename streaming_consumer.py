@@ -1,3 +1,5 @@
+"""Script to consume data using KafkaConsumer, clean the data and then upload it to a PostGreSQL server"""
+
 from kafka import KafkaConsumer
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
@@ -83,6 +85,7 @@ joined_json_df = json_df.join(existing_data_df, ["unique_id"], "leftanti")
 
 
 def write_to_postgresql(batch_df, batch_id):
+    """writes all streaming data to PostGreSQL server in batches with Batch_id stored in the server"""
     batch_id_df = spark.read.jdbc(url=url, table="batch_id", properties=login)
     latest_batch_id = batch_id_df.first()["value"]
     new_batch_id = latest_batch_id + 1

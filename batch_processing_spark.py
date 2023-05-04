@@ -1,3 +1,5 @@
+""""Script to download all .json files from an AWS datalake, clean it and then to upload to a PostGreSQL server for long term storage"""
+
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType
