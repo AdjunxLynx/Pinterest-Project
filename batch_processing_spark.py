@@ -7,7 +7,8 @@ from pyspark.sql.types import StructType, StructField, IntegerType, StringType
 from pyspark.sql.functions import when, regexp_replace
 import time
 import os
-import boto3
+import yaml
+from yaml.loader import SafeLoader
 
 #pyspark configurations
 os.environ["PYSPARK_SUBMIT_ARGS"] = "--packages com.amazonaws:aws-java-sdk-s3:1.12.196,org.apache.hadoop:hadoop-aws:3.3.4,org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2 --driver-class-path /Users/kamil/Downloads/postgresql-42.2.27.jre7.jar batch_processing_spark.py pyspark-shell"
@@ -20,7 +21,7 @@ sc=SparkContext(conf=conf)
 with open("Priv.yaml") as priv:
     priv_data = yaml.load(priv, Loader=SafeLoader)
 url = priv_data["url"]
-login = {priv_data["PSQL_user"], priv_data["PSQL_password"]}
+login = {"user": priv_data["PSQL_user"], "password": priv_data["PSQL_password"]}
 accessKeyId = priv_data["accessKeyId"]
 secretAccessKey = priv_data["secretAccessKey"]
 
@@ -91,3 +92,4 @@ df.write.jdbc(url=url, table="long_term_user_data", mode="overwrite", properties
 
 after = time.time()
 print('took ' + str(round(after-before)) +  ' seconds')
+quit()

@@ -34,7 +34,7 @@ schema = StructType([
 with open("Priv.yaml") as priv:
     priv_data = yaml.load(priv, Loader=SafeLoader)
 url = priv_data["url"]
-login = {priv_data["PSQL_user"], priv_data["PSQL_password"]}
+login = {"user": priv_data["PSQL_user"], "password": priv_data["PSQL_password"]}
 
 #spark context
 spark = SparkSession \
