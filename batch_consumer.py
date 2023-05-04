@@ -1,20 +1,21 @@
 """Script to consume and upload all data sent to Kafka Consumer to an AWS datalake"""
 
+#all import statements
 from kafka import KafkaConsumer
 import boto3
 import findspark
-import json
 import multiprocessing
 import pyspark
 import os
 
-
+#connection data
 topic = "MyFirstKafkaTopic"
 consumer = KafkaConsumer(topic, bootstrap_servers = "localhost:9092")
 
 s3_resource = boto3.resource("s3")
 bucket = s3_resource.Bucket('pinterest-data-d4a3a0c7-0a92-4efb-bdcc-4b3e20242e1e')
 
+#spark config
 findspark.init()
 cfg = (
     pyspark.SparkConf()
@@ -24,12 +25,9 @@ cfg = (
     .setExecutorEnv(pairs=[("VAR3", "value3"), ("VAR4", "value4")])
     .setIfMissing("spark.executor.memory", "1g")
 )
-#print(cfg.get("spark.executor.memory"))
-#print(cfg.toDebugString())
 session = pyspark.sql.SparkSession.builder.config(conf=cfg).getOrCreate()
 
-
-
+#loop to read and upload consumer data
 print("working")
 i = 0
 for message in consumer:
