@@ -87,12 +87,10 @@ def write_to_postgresql(batch_df, batch_id):
     latest_batch_id = batch_id_df.first()["value"]
     new_batch_id = latest_batch_id + 1
     batch_id_df = spark.createDataFrame([(new_batch_id,)], ["value"])
+    batch_df = batch_df.withColumn("batch_id", lit(new_batch_id))
     batch_id_df.write.jdbc(url=url, table="batch_id", mode="overwrite", properties=login)
     existing_data_df = spark.read.jdbc(url=url, table="experimental_data", properties=login)
-
-
-
-    batch_df = batch_df.withColumn("batch_id", lit(new_batch_id))
+    
     batch_df = batch_df.dropDuplicates(["unique_id"])
     batch_df = batch_df.join(existing_data_df, ["unique_id"], "leftanti")
 
@@ -122,5 +120,3 @@ joined_json_df.repartition(1).writeStream \
     .start() \
     .awaitTermination()
 
-
-#phoebe woz here.txt
