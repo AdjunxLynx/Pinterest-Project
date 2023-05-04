@@ -1,0 +1,7 @@
+[2023-05-01 23:30:07,741] WARN Client session timed out, have not heard from server in 13075ms for session id 0x100041341c30001 (org.apache.zookeeper.ClientCnxn)
+[2023-05-01 23:30:08,316] WARN Session 0x100041341c30001 for sever localhost/0:0:0:0:0:0:0:1:2181, Closing socket connection. Attempting reconnect except it is a SessionExpiredException. (org.apache.zookeeper.ClientCnxn)
+org.apache.zookeeper.ClientCnxn$SessionTimeoutException: Client session timed out, have not heard from server in 13075ms for session id 0x100041341c30001
+	at org.apache.zookeeper.ClientCnxn$SendThread.run(ClientCnxn.java:1258)
+[2023-05-01 23:30:09,895] INFO Opening socket connection to server localhost/127.0.0.1:2181. (org.apache.zookeeper.ClientCnxn)
+[2023-05-01 23:30:09,904] INFO Socket connection established, initiating session, client: /127.0.0.1:65304, server: localhost/127.0.0.1:2181 (org.apache.zookeeper.ClientCnxn)
+[2023-05-01 23:30:09,976] INFO Session establishment complete on server localhost/127.0.0.1:2181, session id = 0x100041341c30001, negotiated timeout = 18000 (org.apache.zookeeper.ClientCnxn)
