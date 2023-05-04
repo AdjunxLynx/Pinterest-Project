@@ -6,11 +6,13 @@ from pyspark.sql.functions import from_json, col, regexp_replace, when, split, l
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 import findspark
 import os
+import yaml
+from yaml.loader import SafeLoader
 
 findspark.init()
 #kafka variables
 os.environ["PYSPARK_SUBMIT_ARGS"] = "--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2 --driver-class-path /Users/kamil/Downloads/postgresql-42.2.27.jre7.jar streaming_consumer.py pyspark-shell"
-kafka_topic_name = 'MyFirstKafkaTopic'
+kafka_topic_name = 'PinterestPosts'
 kafka_bootstrap_server = 'localhost:9092'
 
 #DataFrame format
@@ -28,14 +30,16 @@ schema = StructType([
     StructField("category", StringType())
 ])
 
-#connection data
-url = "jdbc:postgresql://192.168.8.107:5432/pinterest_streaming"
-login = {"user": "admin", "password": "Myacount1"}
+#loads all private data
+with open("Priv.yaml") as priv:
+    priv_data = yaml.load(priv, Loader=SafeLoader)
+url = priv_data["url"]
+login = {priv_data["PSQL_user"], priv_data["PSQL_password"]}
 
 #spark context
 spark = SparkSession \
         .builder \
-        .appName("KafkaStreaming ") \
+        .appName("KafkaStreaming") \
         .getOrCreate()
 spark.sparkContext.setLogLevel("ERROR")
 df = spark \

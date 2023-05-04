@@ -6,8 +6,6 @@ from kafka import KafkaProducer
 
 app = FastAPI()
 
-
-
 class Data(BaseModel):
     category: str
     index: int
@@ -20,11 +18,13 @@ class Data(BaseModel):
     image_src: str
     downloaded: int
     save_location: str
-topic = "MyFirstKafkaTopic"
-producer = KafkaProducer(bootstrap_servers = "localhost:9092", value_serializer = lambda x: dumps(x).encode("ascii"))
-@app.post("/pin/")
-def get_db_row(item: Data):
 
+topic = "PinterestPosts"
+producer = KafkaProducer(bootstrap_servers = "localhost:9092", value_serializer = lambda x: dumps(x).encode("ascii"))
+
+@app.post("/pin/")
+
+def get_db_row(item: Data):
     data = dict(item)
     producer.send(topic, data)
 

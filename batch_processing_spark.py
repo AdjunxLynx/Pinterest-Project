@@ -69,29 +69,24 @@ df = spark.read.option("mode", "PERMISSIVE") \
 
 ###DF cleaning operations
 df = df.drop('downloaded')
-
 df = df.distinct()
 image_or_video = ['video', 'image', 'multi-video(story page format)']
 category_list = ['event-planning', 'art', 'home-decor', 'diy-and-crafts', 'education', 'christmas', 'mens-fashion', 'tattoos', 'vehicles', 'travel', 'beauty', 'quotes', 'finance']
 df = df.filter(df.is_image_or_video.isin(image_or_video))
 df = df.filter(df.category.isin(category_list))
 
-
+#column cleaning operations
 df = df.withColumn('follower_count', when(df.follower_count.endswith('k'), regexp_replace(df.follower_count,'k','000'))
                    .when(df.follower_count.endswith('M'), regexp_replace(df.follower_count,'M','000000'))
                    .otherwise(df.follower_count))
-
 df = df.withColumn('description', when(df.description == 'No description available Story format',  'null')
                    .otherwise(df.description))
-
 df = df.withColumn('tag_list', when(df.tag_list.contains(','), regexp_replace(df.tag_list, ',', ''))
                    .otherwise(df.tag_list))
-
-
 df.withColumn("follower_count", df.follower_count.cast(IntegerType()))
 
+#print and upload to PostGreSQL
 df.show()
-
 df.write.jdbc(url=url, table="long_term_user_data", mode="overwrite", properties=login)
 
 after = time.time()

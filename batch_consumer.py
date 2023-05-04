@@ -9,7 +9,7 @@ import pyspark
 import os
 
 #connection data
-topic = "MyFirstKafkaTopic"
+topic = "PinterestPosts"
 consumer = KafkaConsumer(topic, bootstrap_servers = "localhost:9092")
 
 s3_resource = boto3.resource("s3")
@@ -38,4 +38,4 @@ for message in consumer:
     payload = new_message
     response = bucket.put_object(Body= payload, Key = filename)
     i += 1
-    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    print("End of Upload batch")
