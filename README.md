@@ -7,6 +7,7 @@ Please use requirements.txt to install all dependencies
 batch consumer uses the KafkaConsumer class to read all data sent to the Kafka brokers. It then decodes the message from `ascii`. a custom filename is created and used to upload the data to an AWS bucket using a configuration data stored in a variable.
 
 <img width="718" alt="image" src="https://github.com/AdjunxLynx/Pinterest-Project/assets/117390288/0ed2d3da-01b4-49c2-a438-daa46ccf2f98">
+
 here is an image of the AWS datalake filled with 
 
 ## batch_processing_spark.py
